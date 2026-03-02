@@ -84,6 +84,45 @@ Then open **[http://localhost:5757](http://localhost:5757)**.
 
 ---
 
+### Option 5 — No Docker, plain Python (Windows & Mac)
+
+**Requires:** Python 3.11+ → [python.org/downloads](https://www.python.org/downloads/)
+
+**Step 1 — Clone the repo and install dependencies**
+
+```bash
+git clone https://github.com/Artixskillz/Excel-Unprotect.git
+cd Excel-Unprotect
+pip install -r excel-unprotect/requirements.txt
+```
+
+> 💡 Recommended: use a virtual environment first
+> ```bash
+> python -m venv venv
+> # Windows:
+> venv\Scripts\activate
+> # Mac / Linux:
+> source venv/bin/activate
+> ```
+
+**Step 2 — Run it**
+
+```bash
+python run.py
+```
+
+Then open **[http://localhost:5757](http://localhost:5757)**.
+
+Files are stored in a `data/` folder next to the repo. To stop the server press `Ctrl+C`.
+
+**Optional flags:**
+```bash
+python run.py --port 8080          # use a different port
+python run.py --host 0.0.0.0       # expose to your local network
+```
+
+---
+
 ## 📖 How It Works
 
 Excel files (`.xlsx` and friends) are ZIP archives containing XML files. Protection in Excel is stored as XML elements:

@@ -16,6 +16,7 @@ GET    /                        – SPA (served from /app/static)
 """
 
 import json
+import os
 import sqlite3
 import uuid
 from datetime import datetime
@@ -28,10 +29,11 @@ from fastapi.staticfiles import StaticFiles
 from processor import remove_protection
 
 # ---------------------------------------------------------------------------
-# Paths
+# Paths — DATA_DIR can be overridden via environment variable so the app
+# works both inside Docker (/data) and when run locally (./data)
 # ---------------------------------------------------------------------------
 
-DATA_DIR    = Path("/data")
+DATA_DIR    = Path(os.environ.get("DATA_DIR", "/data"))
 UPLOADS_DIR = DATA_DIR / "uploads"
 DB_PATH     = DATA_DIR / "db.sqlite"
 

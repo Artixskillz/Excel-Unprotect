@@ -7,7 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ .
 
-# Data directory for SQLite DB + processed files (mount as a volume)
+# Pin data directory for Docker (overridden to ./data when running locally)
+ENV DATA_DIR=/data
 RUN mkdir -p /data/uploads
 
 EXPOSE 8000
