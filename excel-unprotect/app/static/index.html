@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Excel Unprotect</title>
+
+  <!-- Favicon: indigo spreadsheet grid -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%236366f1'/%3E%3Crect x='5' y='5' width='22' height='22' rx='2' fill='none' stroke='white' stroke-width='2'/%3E%3Cline x1='5' y1='12' x2='27' y2='12' stroke='white' stroke-width='2'/%3E%3Cline x1='5' y1='19' x2='27' y2='19' stroke='white' stroke-width='2'/%3E%3Cline x1='12' y1='5' x2='12' y2='27' stroke='white' stroke-width='2'/%3E%3Cline x1='19' y1='5' x2='19' y2='27' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -16,7 +20,6 @@
     <div class="header-inner">
       <div class="logo">
         <div class="logo-mark">
-          <!-- spreadsheet grid icon -->
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -31,6 +34,26 @@
           <span class="logo-sub">Remove sheet &amp; workbook protection</span>
         </div>
       </div>
+
+      <!-- Dark mode toggle -->
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1"  x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1"  y1="12" x2="3"  y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -40,11 +63,10 @@
     <!-- ── Upload Card ──────────────────────────────────────────── -->
     <div class="card" id="uploadCard">
 
-      <!-- STATE: idle / drop zone -->
+      <!-- STATE: idle -->
       <div id="uploadView">
         <div class="drop-zone" id="dropZone">
           <input type="file" id="fileInput" accept=".xlsx,.xlsm,.xltx,.xltm" hidden />
-
           <div class="dz-icon-wrap">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="1.75"
@@ -54,10 +76,8 @@
               <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
             </svg>
           </div>
-
           <h2 class="dz-heading">Drop your Excel file here</h2>
           <p class="dz-sub">Drag &amp; drop or <span class="dz-browse">browse files</span></p>
-
           <div class="chip-row">
             <span class="chip">.xlsx</span>
             <span class="chip">.xlsm</span>
@@ -69,9 +89,7 @@
 
       <!-- STATE: processing -->
       <div id="processingView" class="hidden state-center">
-        <div class="spinner-wrap">
-          <div class="spinner"></div>
-        </div>
+        <div class="spinner-wrap"><div class="spinner"></div></div>
         <h3 class="state-title">Processing file…</h3>
         <p class="state-sub" id="processingFilename"></p>
         <p class="state-hint">Scanning sheets and stripping protection nodes</p>
@@ -81,25 +99,29 @@
       <div id="resultView" class="hidden state-center">
         <div class="status-icon success-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>
-
         <h3 class="state-title" id="resultHeadline">Done!</h3>
-        <p class="state-sub" id="resultFilename"></p>
+        <p class="state-sub"    id="resultFilename"></p>
 
         <div class="stats-strip">
           <div class="stat-item">
-            <span class="stat-num" id="statSheets">0</span>
+            <span class="stat-num"   id="statSheets">0</span>
             <span class="stat-label">Sheets<br>Unlocked</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num" id="statWorkbook">—</span>
+            <span class="stat-num"   id="statWorkbook">—</span>
             <span class="stat-label">Workbook<br>Unlocked</span>
           </div>
+        </div>
+
+        <!-- Unlocked sheet names -->
+        <div id="sheetNamesList" class="sheet-names-wrap hidden">
+          <p class="sheet-names-label">Sheets unlocked:</p>
+          <div id="sheetNamesTags" class="sheet-names-tags"></div>
         </div>
 
         <div class="action-row">
@@ -112,9 +134,7 @@
             </svg>
             Download Unlocked File
           </button>
-          <button class="btn btn-ghost" onclick="resetUpload()">
-            Process Another File
-          </button>
+          <button class="btn btn-ghost" onclick="resetUpload()">Process Another File</button>
         </div>
       </div>
 
@@ -123,8 +143,8 @@
         <div class="status-icon error-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6"  y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6"  x2="6"  y2="18"/>
+            <line x1="6"  y1="6"  x2="18" y2="18"/>
           </svg>
         </div>
         <h3 class="state-title">Processing Failed</h3>
@@ -139,8 +159,20 @@
     <!-- ── History Section ──────────────────────────────────────── -->
     <section class="history-section">
       <div class="section-header">
-        <h2 class="section-title">Upload History</h2>
-        <span class="badge-count" id="historyCount"></span>
+        <div class="section-header-left">
+          <h2 class="section-title">Upload History</h2>
+          <span class="badge-count" id="historyCount"></span>
+        </div>
+        <button class="btn btn-danger-ghost" id="purgeBtn" onclick="confirmPurgeAll()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+          Clear All
+        </button>
       </div>
 
       <div class="card">
@@ -167,8 +199,9 @@
                 <th>Filename</th>
                 <th>Date</th>
                 <th>Size</th>
-                <th>Sheets</th>
+                <th>Sheets Unlocked</th>
                 <th>Workbook</th>
+                <th>Download</th>
                 <th></th>
               </tr>
             </thead>
@@ -179,6 +212,27 @@
     </section>
 
   </main>
+
+  <!-- ── Confirmation Modal ───────────────────────────────────────── -->
+  <div id="confirmModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-warn-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9"  x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="modal-title"   id="confirmTitle">Are you sure?</h3>
+      <p  class="modal-body"    id="confirmMessage"></p>
+      <p  class="modal-warning">This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-danger"  id="confirmOkBtn">Delete</button>
+        <button class="btn btn-ghost"   id="confirmCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
