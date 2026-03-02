@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Excel Unprotect</title>
 
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="XL Unlock" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+
   <!-- Favicon: indigo spreadsheet grid -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%236366f1'/%3E%3Crect x='5' y='5' width='22' height='22' rx='2' fill='none' stroke='white' stroke-width='2'/%3E%3Cline x1='5' y1='12' x2='27' y2='12' stroke='white' stroke-width='2'/%3E%3Cline x1='5' y1='19' x2='27' y2='19' stroke='white' stroke-width='2'/%3E%3Cline x1='12' y1='5' x2='12' y2='27' stroke='white' stroke-width='2'/%3E%3Cline x1='19' y1='5' x2='19' y2='27' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
 
@@ -35,25 +44,38 @@
         </div>
       </div>
 
-      <!-- Dark mode toggle -->
-      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
-        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1"  x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1"  y1="12" x2="3"  y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
-          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
-        </svg>
-        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
+      <div class="header-actions">
+        <!-- PWA install button (hidden until browser fires beforeinstallprompt) -->
+        <button class="install-btn" id="installBtn" title="Install as desktop app" aria-label="Install app">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Install App
+        </button>
+
+        <!-- Dark mode toggle -->
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1"  x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1"  y1="12" x2="3"  y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+            <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -66,8 +88,8 @@
       <!-- STATE: idle -->
       <div id="uploadView">
         <div class="drop-zone" id="dropZone">
-          <input type="file" id="fileInput" accept=".xlsx,.xlsm,.xltx,.xltm" hidden />
-          <div class="dz-icon-wrap">
+          <input type="file" id="fileInput" accept=".xlsx,.xlsm,.xltx,.xltm" multiple hidden />
+          <div class="dz-icon-wrap" id="dzIconWrap">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="1.75"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -76,8 +98,8 @@
               <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
             </svg>
           </div>
-          <h2 class="dz-heading">Drop your Excel file here</h2>
-          <p class="dz-sub">Drag &amp; drop or <span class="dz-browse">browse files</span></p>
+          <h2 class="dz-heading" id="dzHeading">Drop your Excel files here</h2>
+          <p class="dz-sub">Drag &amp; drop or <span class="dz-browse">browse files</span> &mdash; single or multiple</p>
           <div class="chip-row">
             <span class="chip">.xlsx</span>
             <span class="chip">.xlsm</span>
@@ -87,7 +109,7 @@
         </div>
       </div>
 
-      <!-- STATE: processing -->
+      <!-- STATE: processing (single file) -->
       <div id="processingView" class="hidden state-center">
         <div class="spinner-wrap"><div class="spinner"></div></div>
         <h3 class="state-title">Processing file…</h3>
@@ -95,7 +117,23 @@
         <p class="state-hint">Scanning sheets and stripping protection nodes</p>
       </div>
 
-      <!-- STATE: success -->
+      <!-- STATE: batch queue (multiple files) -->
+      <div id="batchView" class="hidden">
+        <div class="batch-header">
+          <h3 class="state-title">Processing <span id="batchTotal">0</span> files</h3>
+          <div class="batch-progress-track">
+            <div class="batch-progress-fill" id="batchProgressFill"></div>
+          </div>
+          <p class="batch-status-text" id="batchStatusText">0 of 0 complete</p>
+        </div>
+        <div class="batch-list" id="batchList"></div>
+        <div class="batch-done-row hidden" id="batchDoneRow">
+          <button class="btn btn-primary" onclick="resetUpload()">Upload More Files</button>
+          <button class="btn btn-ghost"   onclick="resetUpload()">Done</button>
+        </div>
+      </div>
+
+      <!-- STATE: success (single file) -->
       <div id="resultView" class="hidden state-center">
         <div class="status-icon success-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
@@ -134,7 +172,7 @@
             </svg>
             Download Unlocked File
           </button>
-          <button class="btn btn-ghost" onclick="resetUpload()">Process Another File</button>
+          <button class="btn btn-ghost" onclick="resetUpload()">Process Another</button>
         </div>
       </div>
 
@@ -163,16 +201,26 @@
           <h2 class="section-title">Upload History</h2>
           <span class="badge-count" id="historyCount"></span>
         </div>
-        <button class="btn btn-danger-ghost" id="purgeBtn" onclick="confirmPurgeAll()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/>
-            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-          </svg>
-          Clear All
-        </button>
+        <div class="section-header-right">
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="search" id="searchInput" placeholder="Search files…" autocomplete="off" />
+          </div>
+          <button class="btn btn-danger-ghost" id="purgeBtn" onclick="confirmPurgeAll()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+            </svg>
+            Clear All
+          </button>
+        </div>
       </div>
 
       <div class="card">
@@ -191,15 +239,36 @@
           <p class="empty-hint">Upload your first Excel file above to get started.</p>
         </div>
 
+        <!-- No-results state (search returned nothing) -->
+        <div id="noResultsState" class="empty-state hidden">
+          <div class="empty-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <p>No files match your search.</p>
+          <p class="empty-hint" id="noResultsHint"></p>
+        </div>
+
         <!-- Table -->
         <div id="tableWrap" class="hidden table-wrap">
           <table class="history-table">
             <thead>
               <tr>
-                <th>Filename</th>
-                <th>Date</th>
-                <th>Size</th>
-                <th>Sheets Unlocked</th>
+                <th class="sortable" onclick="sortBy('original_filename')">
+                  Filename <span class="sort-icon" id="sort-original_filename">↕</span>
+                </th>
+                <th class="sortable" onclick="sortBy('upload_time')">
+                  Date <span class="sort-icon active" id="sort-upload_time">↓</span>
+                </th>
+                <th class="sortable" onclick="sortBy('file_size_bytes')">
+                  Size <span class="sort-icon" id="sort-file_size_bytes">↕</span>
+                </th>
+                <th class="sortable" onclick="sortBy('sheets_unprotected')">
+                  Sheets Unlocked <span class="sort-icon" id="sort-sheets_unprotected">↕</span>
+                </th>
                 <th>Workbook</th>
                 <th>Download</th>
                 <th></th>

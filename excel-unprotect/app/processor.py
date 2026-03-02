@@ -11,6 +11,14 @@ import zipfile
 from typing import Dict, List, Tuple
 
 # ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+# Compound File Binary Format magic bytes — used by password-encrypted .xlsx
+# files (ECMA-376 Agile/Standard encryption) and legacy .xls files.
+_CFBF_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+
+# ---------------------------------------------------------------------------
 # Compiled patterns
 # ---------------------------------------------------------------------------
 
@@ -77,6 +85,24 @@ def remove_protection(file_bytes: bytes) -> Tuple[bytes, Dict]:
         workbook_unprotected  bool  – whether workbook protection was removed
         unlocked_sheet_names  list  – display names of unlocked sheets
     """
+    # ── Encryption / format checks ───────────────────────────────────
+    if len(file_bytes) >= 8 and file_bytes[:8] == _CFBF_MAGIC:
+        raise ValueError(
+            "This file is protected with a file-open password (encryption). "
+            "Excel Unprotect can only remove sheet/workbook editing locks — it "
+            "cannot decrypt files. To fix: open the file in Excel, go to "
+            "File → Info → Protect Workbook → Encrypt with Password, clear the "
+            "password, save, then upload again."
+        )
+
+    try:
+        zipfile.ZipFile(io.BytesIO(file_bytes), "r").close()
+    except zipfile.BadZipFile:
+        raise ValueError(
+            "This file doesn't appear to be a valid Excel file. "
+            "Please upload a valid .xlsx, .xlsm, .xltx, or .xltm file."
+        )
+
     stats: Dict = {
         "sheets_unprotected":   0,
         "workbook_unprotected": False,

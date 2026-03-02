@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+
+  <!-- Spreadsheet grid (upper-left) -->
+  <rect x="56" y="56" width="245" height="215" rx="16" fill="rgba(255,255,255,0.12)"/>
+  <line x1="56"  y1="128" x2="301" y2="128" stroke="rgba(255,255,255,0.38)" stroke-width="8"/>
+  <line x1="56"  y1="200" x2="301" y2="200" stroke="rgba(255,255,255,0.38)" stroke-width="8"/>
+  <line x1="136" y1="56"  x2="136" y2="271" stroke="rgba(255,255,255,0.38)" stroke-width="8"/>
+  <line x1="216" y1="56"  x2="216" y2="271" stroke="rgba(255,255,255,0.38)" stroke-width="8"/>
+
+  <!-- Open padlock body (lower-right, overlapping grid slightly) -->
+  <rect x="220" y="282" width="236" height="190" rx="24" fill="white"/>
+
+  <!-- Open shackle: right leg anchored in lock, left leg lifted free -->
+  <path d="M398 330 L398 215 Q339 148 280 215 L280 265"
+        fill="none" stroke="rgba(255,255,255,0.88)"
+        stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Keyhole -->
+  <circle cx="338" cy="362" r="27" fill="#6366f1"/>
+  <rect x="326" y="362" width="24" height="42" rx="6" fill="#6366f1"/>
+</svg>
