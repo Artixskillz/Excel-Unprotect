@@ -251,7 +251,9 @@ def purge_all():
 
 
 # ---------------------------------------------------------------------------
-# Static files – must be mounted LAST (catch-all)
+# Static files – path is relative to this file so it works both in Docker
+# (/app/static) and when run locally (excel-unprotect/app/static)
 # ---------------------------------------------------------------------------
 
-app.mount("/", StaticFiles(directory="/app/static", html=True), name="static")
+STATIC_DIR = Path(__file__).parent / "static"
+app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
