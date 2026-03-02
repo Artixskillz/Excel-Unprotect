@@ -16,6 +16,10 @@ A clean, self-hosted web UI for removing **sheet protection** and **workbook pro
 - 🔓 Removes **sheet-level protection** from every sheet in the workbook
 - 🔓 Removes **workbook-level protection** (structure lock)
 - 📁 **Upload history** — every processed file is stored and re-downloadable at any time
+- ⬇️ Download both the **original** and **unlocked** file from history
+- 🌙 **Dark mode** toggle (remembers your preference)
+- 🗑️ Delete individual files or clear all history (with confirmation)
+- 🏷️ Shows which sheet names were unlocked
 - 🖥️ Clean, modern web UI with drag & drop support
 - 🐳 Single Docker container, no dependencies to install
 - 💾 Persistent storage via Docker volume — history survives restarts
@@ -24,19 +28,40 @@ A clean, self-hosted web UI for removing **sheet protection** and **workbook pro
 
 ## 🚀 Quick Start
 
-### Option 1 — Docker Compose (recommended)
-
-Download the [`docker-compose.yml`](excel-unprotect/docker-compose.yml) file and run:
+### Option 1 — Clone & run (build from source)
 
 ```bash
-docker compose up -d
+git clone https://github.com/Artixskillz/Excel-Unprotect.git
+cd Excel-Unprotect
+docker compose up --build -d
 ```
 
-Then open **[http://localhost:5757](http://localhost:5757)** in your browser.
+Then open **[http://localhost:5757](http://localhost:5757)** in your browser. That's it — no Docker Hub account needed.
 
 ---
 
-### Option 2 — Docker run (one-liner)
+### Option 2 — Docker Compose (pull pre-built image)
+
+No need to clone the repo. Just save this as `docker-compose.yml` and run `docker compose up -d`:
+
+```yaml
+version: "3.9"
+services:
+  excel-unprotect:
+    image: artixskillz/excel-unprotect:latest
+    container_name: excel-unprotect
+    ports:
+      - "5757:8000"
+    volumes:
+      - excel-data:/data
+    restart: unless-stopped
+volumes:
+  excel-data:
+```
+
+---
+
+### Option 3 — Docker run (one-liner)
 
 ```bash
 docker run -d \
@@ -51,10 +76,10 @@ Then open **[http://localhost:5757](http://localhost:5757)**.
 
 ---
 
-### Option 3 — Portainer Stack
+### Option 4 — Portainer Stack
 
 1. In Portainer, go to **Stacks → + Add stack**
-2. Paste the contents of [`docker-compose.yml`](excel-unprotect/docker-compose.yml)
+2. Paste the `docker-compose.yml` from Option 2 above
 3. Click **Deploy the stack**
 
 ---
@@ -106,8 +131,13 @@ excel-unprotect/
 
 ## 🔄 Updating
 
-When a new image is published, update your container:
+**If you cloned the repo (build from source):**
+```bash
+git pull
+docker compose up --build -d
+```
 
+**If you're pulling the pre-built image:**
 ```bash
 docker compose pull && docker compose up -d
 ```

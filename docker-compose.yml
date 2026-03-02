@@ -1,8 +1,12 @@
 version: "3.9"
 
+# Root-level compose — works from the repo root after cloning.
+# Build from source:  docker compose up --build -d
+# Pull from Hub:      docker compose pull && docker compose up -d
+
 services:
   excel-unprotect:
-    build: .                                    # build from local source
+    build: ./excel-unprotect                    # build from local source
     image: artixskillz/excel-unprotect:latest   # or pull from Docker Hub
     container_name: excel-unprotect
     ports:
