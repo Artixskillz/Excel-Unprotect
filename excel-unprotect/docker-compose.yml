@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  excel-unprotect:
+    image: YOURDOCKERHUBUSERNAME/excel-unprotect:latest
+    container_name: excel-unprotect
+    ports:
+      - "8000:8000"
+    volumes:
+      - excel-data:/data
+    restart: unless-stopped
+
+volumes:
+  excel-data:
